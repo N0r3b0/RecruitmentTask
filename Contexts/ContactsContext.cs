@@ -9,5 +9,7 @@ namespace RecruitmentTask.Contexts
         public ContactsContext(DbContextOptions<ContactsContext> options) : base(options) { }
 
         public DbSet<Contact> Contacts { get; set; }
+
+
     }
 }
