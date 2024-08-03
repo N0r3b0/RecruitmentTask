@@ -3,7 +3,7 @@ using RecruitmentTask.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 {
-    builder.Services.AddDbContext<ContactsContext>(options => options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING")));
+    builder.Services.AddDbContext<ContactsContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
     builder.Services.AddCors();
     builder.Services.AddControllers();
 }
@@ -14,9 +14,11 @@ var app = builder.Build();
     app.MapControllers();
 }
 
+
+// logger do konsolki
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
-// Check database connection
+// Sprawdzanie czy jest po³¹czenie z baz¹ danych
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ContactsContext>();
@@ -24,14 +26,13 @@ using (var scope = app.Services.CreateScope())
     {
         dbContext.Database.OpenConnection();
         dbContext.Database.CloseConnection();
-        logger.LogInformation("Database connection got succesfully established");
+        logger.LogInformation("Po³¹czenie z baz¹ danych zosta³o nawi¹zane pomyœlnie.");
     }
     catch (Exception ex)
     {
-        logger.LogError($"Error while connecting to the database: {ex.Message}");
+        logger.LogError($"B³¹d po³¹czenia z baz¹ danych: {ex.Message}");
     }
 }
 
-app.MapGet("/", () => "Hello World!");
 
 app.Run();
