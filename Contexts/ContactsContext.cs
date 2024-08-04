@@ -10,6 +10,15 @@ namespace RecruitmentTask.Contexts
 
         public DbSet<Contact> Contacts { get; set; }
 
+        public DbSet<User> Users { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // non-standard table names
+            modelBuilder.Entity<Contact>().ToTable("Contact"); 
+            modelBuilder.Entity<User>().ToTable("User"); 
+        }
     }
 }

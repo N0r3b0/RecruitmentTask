@@ -8,23 +8,23 @@ namespace RecruitmentTask.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ContactsController : ControllerBase
+    public class ContactController : ControllerBase
     {
         private readonly ContactsContext _context;
 
-        public ContactsController(ContactsContext context)
+        public ContactController(ContactsContext context)
         {
             _context = context;
         }
 
-        // GET: api/Contacts
+        // GET: api/Contact
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Contact>>> GetContacts()
         {
             return await _context.Contacts.ToListAsync();
         }
 
-        // GET: api/Contacts/5
+        // GET: api/Contact/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Contact>> GetContact(int id)
         {
@@ -38,7 +38,7 @@ namespace RecruitmentTask.Controllers
             return contact;
         }
 
-        // PUT: api/Contacts/5
+        // PUT: api/Contact/5
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutContact(int id, Contact contact)
@@ -69,7 +69,7 @@ namespace RecruitmentTask.Controllers
             return NoContent();
         }
 
-        // POST: api/Contacts
+        // POST: api/Contact
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Contact>> PostContact(Contact contact)
@@ -80,7 +80,7 @@ namespace RecruitmentTask.Controllers
             return CreatedAtAction("GetContact", new { id = contact.Id }, contact);
         }
 
-        // DELETE: api/Contacts/5
+        // DELETE: api/Contact/5
         [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContact(int id)

@@ -12,7 +12,7 @@ using RecruitmentTask.Contexts;
 namespace RecruitmentTask.Migrations
 {
     [DbContext(typeof(ContactsContext))]
-    [Migration("20240803211740_InitialCreate")]
+    [Migration("20240803221425_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -66,7 +66,28 @@ namespace RecruitmentTask.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Contacts");
+                    b.ToTable("Contact", (string)null);
+                });
+
+            modelBuilder.Entity("RecruitmentTask.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User", (string)null);
                 });
 #pragma warning restore 612, 618
         }
