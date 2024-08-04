@@ -2,15 +2,14 @@
 
 namespace RecruitmentTask.Models
 {
-    public class User
+    public class UserRegister
     {
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(50)]
         public string Username { get; set; }
 
         [Required]
+        [EmailAddress]
         [MaxLength(100)]
         public string Email { get; set; }
 
@@ -18,4 +17,5 @@ namespace RecruitmentTask.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
+
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using RecruitmentTask.Contexts;
 using RecruitmentTask.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,10 +12,12 @@ namespace RecruitmentTask.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly ContactsContext _context;
         private readonly IConfiguration _config;
 
-        public AuthController(IConfiguration config)
+        public AuthController(ContactsContext context, IConfiguration config)
         {
+            _context = context;
             _config = config;
         }
 
@@ -32,12 +35,34 @@ namespace RecruitmentTask.Controllers
             return NotFound("User not found");
         }
 
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] UserRegister register)
+        {
+            if (_context.Users.Any(u => u.Username == register.Username || u.Email == register.Email))
+            {
+                return BadRequest("User with the same username or email already exists");
+            }
+
+            var user = new User
+            {
+                Username = register.Username,
+                Email = register.Email,
+                Password = BCrypt.Net.BCrypt.HashPassword(register.Password)
+            };
+
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
+            return Ok("User registered successfully");
+        }
+
         private User Authenticate(UserLogin login)
         {
-            // example of hardcoded user
-            if (login.Username == "test" && login.Password == "password")
+            var user = _context.Users.SingleOrDefault(u => u.Username == login.Username);
+
+            if (user != null && BCrypt.Net.BCrypt.Verify(login.Password, user.Password))
             {
-                return new User { Username = "test", Password = "password" };
+                return user;
             }
 
             return null;
