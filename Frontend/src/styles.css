@@ -1,0 +1,105 @@
+/* styles.css */
+
+/* Resetowanie domyślnych stylów */
+body, h1, h2, h3, h4, h5, h6, ul, li, p, form, input, label, button {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Styl dla ciała dokumentu */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+/* Styl dla nagłówków */
+h2 {
+  margin-bottom: 20px;
+}
+
+/* Styl dla nawigacji */
+nav {
+  background-color: #333;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+  nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+  }
+
+    nav ul li {
+      flex: 1;
+    }
+
+      nav ul li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+
+        nav ul li a:hover {
+          background-color: #111;
+        }
+
+/* Styl dla przycisków */
+button {
+  padding: 10px 15px;
+  margin-top: 10px;
+  margin-right: 5px;
+  border: none;
+  background-color: #333;
+  color: white;
+  cursor: pointer;
+}
+
+  button:hover {
+    background-color: #555;
+  }
+
+/* Styl dla listy kontaktów */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+  ul li {
+    margin-bottom: 10px;
+  }
+
+    ul li a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+      ul li a:hover {
+        text-decoration: underline;
+      }
+
+/* Styl dla formularzy */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+  form div {
+    margin-bottom: 10px;
+  }
+
+  form label {
+    font-weight: bold;
+  }
+
+  form input, form select {
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }

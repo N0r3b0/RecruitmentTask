@@ -1,0 +1,66 @@
+<h2>Add New Contact</h2>
+<form (ngSubmit)="save()">
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div>
+    <label>
+      First Name:
+      <input [(ngModel)]="contact.firstName" name="firstName" placeholder="First Name" required />
+    </label>
+  </div>
+  <div>
+    <label>
+      Last Name:
+      <input [(ngModel)]="contact.lastName" name="lastName" placeholder="Last Name" required />
+    </label>
+  </div>
+  <div>
+    <label>
+      Email:
+      <input [(ngModel)]="contact.email" name="email" placeholder="Email" required />
+    </label>
+  </div>
+  <div>
+    <label>
+      Password:
+      <input [(ngModel)]="contact.password" name="password" placeholder="Password" required />
+    </label>
+  </div>
+  <div>
+    <label>
+      Category:
+      <select [(ngModel)]="contact.category" name="category" (change)="onCategoryChange($event)" required>
+        <option value="Personal">Personal</option>
+        <option value="Business">Business</option>
+        <option value="Other">Other</option>
+      </select>
+    </label>
+  </div>
+  <div *ngIf="contact.category === 'Business'">
+    <label>
+      SubCategory:
+      <select [(ngModel)]="contact.subCategory" name="subCategory">
+        <option value="Boss">Boss</option>
+        <option value="Client">Client</option>
+      </select>
+    </label>
+  </div>
+  <div *ngIf="contact.category === 'Other'">
+    <label>
+      SubCategory:
+      <input [(ngModel)]="contact.subCategory" name="subCategory" placeholder="SubCategory" />
+    </label>
+  </div>
+  <div>
+    <label>
+      Phone Number:
+      <input [(ngModel)]="contact.phoneNumber" name="phoneNumber" placeholder="Phone Number" />
+    </label>
+  </div>
+  <div>
+    <label>
+      Birth Date:
+      <input [(ngModel)]="contact.birthDate" name="birthDate" placeholder="Birth Date" />
+    </label>
+  </div>
+  <button type="submit">Save</button>
+</form>

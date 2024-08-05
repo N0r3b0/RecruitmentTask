@@ -40,7 +40,7 @@ namespace RecruitmentTask.Controllers
         {
             if (_context.Users.Any(u => u.Username == register.Username || u.Email == register.Email))
             {
-                return BadRequest("User with the same username or email already exists");
+                return BadRequest(new { message = "User with the same username or email already exists" });
             }
 
             var user = new User
@@ -53,8 +53,9 @@ namespace RecruitmentTask.Controllers
             _context.Users.Add(user);
             _context.SaveChanges();
 
-            return Ok("User registered successfully");
+            return Ok(new { message = "User registered successfully" });
         }
+
 
         private User Authenticate(UserLogin login)
         {

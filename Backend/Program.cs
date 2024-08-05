@@ -32,7 +32,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
-    app.UseHttpsRedirection();
+    //app.UseHttpsRedirection();
     app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
     // Dodanie middleware uwierzytelniania i autoryzacji

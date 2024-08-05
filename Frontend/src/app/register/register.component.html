@@ -1,0 +1,21 @@
+<h2>Register</h2>
+<div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+<div>
+  <label>
+    Username:
+    <input [(ngModel)]="user.username" placeholder="Username" />
+  </label>
+</div>
+<div>
+  <label>
+    Email:
+    <input [(ngModel)]="user.email" type="email" placeholder="Email" />
+  </label>
+</div>
+<div>
+  <label>
+    Password:
+    <input [(ngModel)]="user.password" type="password" placeholder="Password" />
+  </label>
+</div>
+<button (click)="register()">Register</button>
