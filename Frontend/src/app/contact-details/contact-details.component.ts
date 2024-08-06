@@ -20,7 +20,7 @@ export class ContactDetailsComponent implements OnInit {
     category: 'Personal',
     subCategory: '',
     phoneNumber: '',
-    birthDate: new Date()
+    birthDate: ''
   };
   errorMessage: string | null = null;
   isAuthenticated: boolean = false; 
@@ -40,6 +40,7 @@ export class ContactDetailsComponent implements OnInit {
   getContact(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.contactService.getContact(id).subscribe((contact) => {
+      contact.birthDate = contact.birthDate.split('T')[0]; // UTC to yyyy-mm-dd conversion
       this.contact = contact;
     });
   }
@@ -52,11 +53,18 @@ export class ContactDetailsComponent implements OnInit {
 
   save(): void {
     if (!this.authService.isAuthenticated()) {
-      this.errorMessage = 'You must be logged in to delete a contact.';
+      this.errorMessage = 'You must be logged in to save a contact.';
       return;
     }
     if (this.contact) {
-      this.contactService.updateContact(this.contact).subscribe(() => this.router.navigate(['/contacts']));
+      this.contact.birthDate = new Date(this.contact.birthDate).toISOString(); // UTC conversion
+      this.contactService.updateContact(this.contact).subscribe(() => this.router.navigate(['/contacts']),
+        (error) => {
+          this.errorMessage = 'Failed to save contact. Please try again.';
+          this.contact.birthDate = this.contact.birthDate.split('T')[0]; // UTC to yyyy-mm-dd conversion in case of an error
+        }
+       );
+
     }
   }
 

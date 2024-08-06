@@ -1,6 +1,7 @@
 ﻿using RecruitmentTask.Models;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using RecruitmentTask.Migrations;
 
 namespace RecruitmentTask.Contexts
 {
@@ -18,7 +19,11 @@ namespace RecruitmentTask.Contexts
 
             // non-standard table names
             modelBuilder.Entity<Contact>().ToTable("Contact"); 
-            modelBuilder.Entity<User>().ToTable("User"); 
+            modelBuilder.Entity<User>().ToTable("User");
+
+            // database seed
+            modelBuilder.ApplyConfiguration(new SeedData());
+
         }
     }
 }

@@ -19,7 +19,7 @@ export class AddContactComponent implements OnInit {
     category: 'Personal',
     subCategory: '',
     phoneNumber: '',
-    birthDate: new Date()
+    birthDate: ''
   };
   errorMessage: string | null = null;
 
@@ -41,9 +41,13 @@ export class AddContactComponent implements OnInit {
       return;
     }
 
-    this.contactService.createContact(this.contact).subscribe(() => {
-      this.router.navigate(['/contacts']);
-    });
+    this.contact.birthDate = new Date(this.contact.birthDate).toISOString(); // UTC conversion
+    this.contactService.createContact(this.contact).subscribe(() => this.router.navigate(['/contacts']),
+      (error) => {
+        this.errorMessage = 'Failed to save contact. Please try again.';
+        this.contact.birthDate = this.contact.birthDate.split('T')[0]; // UTC to yyyy-mm-dd conversion in case of an error
+      }
+    );
   }
 
   onCategoryChange(event: any): void {

@@ -7,5 +7,5 @@ export interface Contact {
   category: string;
   subCategory: string;
   phoneNumber: string;
-  birthDate: Date;
+  birthDate: string;
 }
