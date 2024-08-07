@@ -23,25 +23,22 @@
       <label>
         Category:
         <select [(ngModel)]="contact.category" name="category" (change)="onCategoryChange($event)" required>
-          <option value="Personal">Personal</option>
-          <option value="Business">Business</option>
-          <option value="Other">Other</option>
+          <option *ngFor="let category of categories" [value]="category.name">{{ category.name }}</option>
         </select>
       </label>
     </div>
     <div *ngIf="contact.category === 'Business'">
       <label>
         SubCategory:
-        <select [(ngModel)]="contact.subCategory" name="subCategory">
-          <option value="Boss">Boss</option>
-          <option value="Client">Client</option>
+        <select [(ngModel)]="contact.subCategory" name="subCategory" required>
+          <option *ngFor="let subCategory of subCategories" [value]="subCategory.name">{{ subCategory.name }}</option>
         </select>
       </label>
     </div>
     <div *ngIf="contact.category === 'Other'">
       <label>
         SubCategory:
-        <input [(ngModel)]="contact.subCategory" name="subCategory" placeholder="SubCategory" />
+        <input [(ngModel)]="contact.subCategory" name="subCategory" placeholder="SubCategory" required />
       </label>
     </div>
     <div>

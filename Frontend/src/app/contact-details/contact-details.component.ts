@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContactService } from '../services/contact.service';
 import { Contact } from '../models/contact';
+import { Category } from '../models/category';
+import { SubCategory } from '../models/subcategory';
+import { CategoryService } from '../services/category.service';
 import { AuthService } from '../services/auth.service';
 
 
@@ -23,18 +26,25 @@ export class ContactDetailsComponent implements OnInit {
     birthDate: ''
   };
   errorMessage: string | null = null;
+  categories: Category[] = [];
+  subCategories: SubCategory[] = [];
   isAuthenticated: boolean = false; 
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private contactService: ContactService,
+    private categoryService: CategoryService,
     private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.isAuthenticated = this.authService.isAuthenticated();
     this.getContact();
+
+    this.categoryService.getCategories().subscribe(categories => {
+      this.categories = categories;
+    });
   }
 
   getContact(): void {
@@ -42,12 +52,33 @@ export class ContactDetailsComponent implements OnInit {
     this.contactService.getContact(id).subscribe((contact) => {
       contact.birthDate = contact.birthDate.split('T')[0]; // UTC to yyyy-mm-dd conversion
       this.contact = contact;
+      this.loadSubCategories(this.contact.category);
     });
   }
 
   onCategoryChange(event: any): void {
-    if (event.target.value !== 'Business') {
+    const selectedCategory = event.target.value;
+
+    if (selectedCategory === 'Business') {
+      this.categoryService.getSubCategories('Business').subscribe(subCategories => {
+        this.subCategories = subCategories;
+      });
+    } else {
+      this.subCategories = [];
+    }
+
+    if (selectedCategory !== 'Business') {
       this.contact.subCategory = '';
+    }
+  }
+
+  loadSubCategories(categoryName: string): void {
+    if (categoryName === 'Business') {
+      this.categoryService.getSubCategories('Business').subscribe(subCategories => {
+        this.subCategories = subCategories;
+      });
+    } else {
+      this.subCategories = [];
     }
   }
 

@@ -69,9 +69,33 @@ namespace RecruitmentTask.Controllers
                 return BadRequest();
             }
 
-            if (!await ValidateCategoryAndSubCategory(contact))
+            if (contact.Category == "Business")
             {
-                return BadRequest("Invalid category or subcategory");
+                var category = await _context.Categories.Include(c => c.SubCategories)
+                                                        .FirstOrDefaultAsync(c => c.Name == "Business");
+                if (category == null || !category.SubCategories.Any(sc => sc.Name == contact.SubCategory))
+                {
+                    return BadRequest("Invalid subcategory for Business category.");
+                }
+            }
+            else if (contact.Category == "Other")
+            {
+                // Check if the subcategory already exists in the database
+                var subCategory = await _context.SubCategories
+                    .FirstOrDefaultAsync(sc => sc.Name == contact.SubCategory && sc.CategoryId == null);
+
+                if (subCategory == null)
+                {
+                    // Add new subcategory to the database
+                    subCategory = new SubCategory
+                    {
+                        Name = contact.SubCategory,
+                        CategoryId = 3 // 3 --> OTHER
+                    };
+
+                    _context.SubCategories.Add(subCategory);
+                    await _context.SaveChangesAsync();
+                }
             }
 
             _context.Entry(contact).State = EntityState.Modified;
@@ -98,19 +122,40 @@ namespace RecruitmentTask.Controllers
         // POST: api/Contact
         [Authorize]
         [HttpPost]
+        [Authorize]
+        [HttpPost]
         public async Task<ActionResult<Contact>> PostContact(Contact contact)
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!int.TryParse(userIdClaim, out var userId))
-            {
-                return BadRequest("Invalid user ID");
-            }
-
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             contact.UserId = userId;
 
-            if (!await ValidateCategoryAndSubCategory(contact))
+            if (contact.Category == "Business")
             {
-                return BadRequest("Invalid category or subcategory");
+                var category = await _context.Categories.Include(c => c.SubCategories)
+                                                        .FirstOrDefaultAsync(c => c.Name == "Business");
+                if (category == null || !category.SubCategories.Any(sc => sc.Name == contact.SubCategory))
+                {
+                    return BadRequest("Invalid subcategory for Business category.");
+                }
+            }
+            else if (contact.Category == "Other")
+            {
+                // Check if the subcategory already exists in the database
+                var subCategory = await _context.SubCategories
+                    .FirstOrDefaultAsync(sc => sc.Name == contact.SubCategory && sc.CategoryId == null);
+
+                if (subCategory == null)
+                {
+                    // Add new subcategory to the database
+                    subCategory = new SubCategory
+                    {
+                        Name = contact.SubCategory,
+                        CategoryId = 3 // 3 --> OTHER
+                    };
+
+                    _context.SubCategories.Add(subCategory);
+                    await _context.SaveChangesAsync();
+                }
             }
 
             _context.Contacts.Add(contact);
@@ -118,6 +163,7 @@ namespace RecruitmentTask.Controllers
 
             return CreatedAtAction("GetContact", new { id = contact.Id }, contact);
         }
+
 
         // DELETE: api/Contact/5
         [Authorize]
@@ -135,6 +181,19 @@ namespace RecruitmentTask.Controllers
             if (contact == null)
             {
                 return NotFound();
+            }
+
+            // Usuwanie powiązanych podkategorii, jeśli kategoria to "Other"
+            if (contact.Category == "Other" && !string.IsNullOrEmpty(contact.SubCategory))
+            {
+                // CategoryId dla "Other" to 3
+                var subCategory = await _context.SubCategories
+                    .FirstOrDefaultAsync(sc => sc.Name == contact.SubCategory && sc.CategoryId == 3);
+
+                if (subCategory != null)
+                {
+                    _context.SubCategories.Remove(subCategory);
+                }
             }
 
             _context.Contacts.Remove(contact);
