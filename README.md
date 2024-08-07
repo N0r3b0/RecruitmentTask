@@ -149,6 +149,13 @@
 ## Backend (ASP.NET Core)
 - **Otwórz projekt**: Otwórz rozwiązanie (plik .sln) w Visual Studio.
 - **Przywróć pakiety NuGet**: Kliknij prawym przyciskiem myszy na rozwiązanie i wybierz Restore NuGet Packages.
+- **Połączenie z bazą danych**: Włącz serwer postgresql. Parametry połączenia znajdują się w pliku appsettings.json (nazwa bazy: postgres, hasło: postgres, nazwa schematu: recruitment):
+``` json
+"ConnectionStrings": {
+    "DefaultConnection": "Server=localhost,5432;Database=postgres;User Id=postgres;Password=postgres;SearchPath=recruitment;"
+  },
+```
+  
 - **Migracje bazy danych**: Otwórz Package Manager Console (Narzędzia > Menedżer pakietów NuGet > Konsola Menedżera pakietów) i uruchom polecenie:
   ```bash
   Update-Database
@@ -172,3 +179,7 @@ ng serve --host=127.0.0.1
 ```
 
 - Aplikacja frontendowa będzie dostępna pod adresem http://127.0.0.1:4200.
+
+## Parametry konta testowego:
+- username: admin
+- password: password
