@@ -31,5 +31,9 @@ namespace RecruitmentTask.Models
 
         [DataType(DataType.Date)]
         public DateTime BirthDate { get; set; }
+
+        [Required]
+        public int UserId { get; set; }
     }
 }
+    

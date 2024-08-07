@@ -1,7 +1,6 @@
-﻿using RecruitmentTask.Models;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RecruitmentTask.Migrations;
+using RecruitmentTask.Models;
 
 namespace RecruitmentTask.Contexts
 {
@@ -10,7 +9,6 @@ namespace RecruitmentTask.Contexts
         public ContactsContext(DbContextOptions<ContactsContext> options) : base(options) { }
 
         public DbSet<Contact> Contacts { get; set; }
-
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -18,12 +16,17 @@ namespace RecruitmentTask.Contexts
             base.OnModelCreating(modelBuilder);
 
             // non-standard table names
-            modelBuilder.Entity<Contact>().ToTable("Contact"); 
+            modelBuilder.Entity<Contact>().ToTable("Contact");
             modelBuilder.Entity<User>().ToTable("User");
 
-            // database seed
-            modelBuilder.ApplyConfiguration(new SeedData());
+            // Define the relationship
+            modelBuilder.Entity<Contact>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(c => c.UserId);
 
+            // database seed
+            //modelBuilder.ApplyConfiguration(new SeedData());
         }
     }
 }

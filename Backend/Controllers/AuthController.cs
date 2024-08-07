@@ -68,7 +68,6 @@ namespace RecruitmentTask.Controllers
 
             return null;
         }
-
         private string Generate(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -76,9 +75,9 @@ namespace RecruitmentTask.Controllers
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Use user ID instead of username
                 new Claim(ClaimTypes.Name, user.Username)
-            };
+              };
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
               _config["Jwt:Issuer"],

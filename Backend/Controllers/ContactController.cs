@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using RecruitmentTask.Contexts;
 using RecruitmentTask.Models;
+using System.Security.Claims;
 
 namespace RecruitmentTask.Controllers
 {
@@ -18,17 +19,32 @@ namespace RecruitmentTask.Controllers
         }
 
         // GET: api/Contact
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Contact>>> GetContacts()
         {
-            return await _context.Contacts.ToListAsync();
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out var userId))
+            {
+                return BadRequest("Invalid user ID");
+            }
+
+            return await _context.Contacts.Where(c => c.UserId == userId).ToListAsync();
         }
 
+
         // GET: api/Contact/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Contact>> GetContact(int id)
         {
-            var contact = await _context.Contacts.FindAsync(id);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out var userId))
+            {
+                return BadRequest("Invalid user ID");
+            }
+
+            var contact = await _context.Contacts.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
 
             if (contact == null)
             {
@@ -38,11 +54,18 @@ namespace RecruitmentTask.Controllers
             return contact;
         }
 
+
         // PUT: api/Contact/5
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutContact(int id, Contact contact)
         {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out var userId) || contact.UserId != userId)
+            {
+                return BadRequest("Invalid user ID or unauthorized");
+            }
+
             if (id != contact.Id)
             {
                 return BadRequest();
@@ -69,11 +92,15 @@ namespace RecruitmentTask.Controllers
             return NoContent();
         }
 
+
         // POST: api/Contact
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Contact>> PostContact(Contact contact)
         {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            contact.UserId = userId;
+
             _context.Contacts.Add(contact);
             await _context.SaveChangesAsync();
 
@@ -85,7 +112,14 @@ namespace RecruitmentTask.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContact(int id)
         {
-            var contact = await _context.Contacts.FindAsync(id);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out var userId))
+            {
+                return BadRequest("Invalid user ID");
+            }
+
+            var contact = await _context.Contacts.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+
             if (contact == null)
             {
                 return NotFound();
@@ -96,6 +130,7 @@ namespace RecruitmentTask.Controllers
 
             return NoContent();
         }
+
 
         private bool ContactExists(int id)
         {
