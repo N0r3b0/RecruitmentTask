@@ -26,7 +26,7 @@ namespace RecruitmentTask.Controllers
                 .Include(c => c.SubCategories)
                 .ToListAsync();
 
-            // Uproszczenie danych, aby unikać cyklicznych odwołań
+            // simplification of data to avoid cyclic references
             var result = categories.Select(c => new
             {
                 c.Id,
