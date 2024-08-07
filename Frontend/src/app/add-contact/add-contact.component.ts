@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ContactService } from '../services/contact.service';
 import { Contact } from '../models/contact';
+import { Category } from '../models/category';
+import { CategoryService } from '../services/category.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -16,16 +18,19 @@ export class AddContactComponent implements OnInit {
     lastName: '',
     email: '',
     password: '',
-    category: 'Personal',
+    category: '',
     subCategory: '',
     phoneNumber: '',
     birthDate: ''
   };
+  categories: Category[] = [];
+  subCategories: string[] = [];
   errorMessage: string | null = null;
 
   constructor(
     private contactService: ContactService,
     private authService: AuthService,
+    private categoryService: CategoryService,
     private router: Router
   ) { }
 
@@ -33,6 +38,10 @@ export class AddContactComponent implements OnInit {
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
     }
+
+    this.categoryService.getCategories().subscribe(categories => {
+      this.categories = categories;
+    });
   }
 
   save(): void {
@@ -51,6 +60,12 @@ export class AddContactComponent implements OnInit {
   }
 
   onCategoryChange(event: any): void {
+    const selectedCategory = this.categories.find(cat => cat.name === event.target.value);
+    if (selectedCategory) {
+      this.subCategories = selectedCategory.subCategories.map(sc => sc.name);
+    } else {
+      this.subCategories = [];
+    }
     if (event.target.value !== 'Business') {
       this.contact.subCategory = '';
     }

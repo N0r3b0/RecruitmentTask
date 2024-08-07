@@ -29,9 +29,7 @@
     <label>
       Category:
       <select [(ngModel)]="contact.category" name="category" (change)="onCategoryChange($event)" required>
-        <option value="Personal">Personal</option>
-        <option value="Business">Business</option>
-        <option value="Other">Other</option>
+        <option *ngFor="let category of categories" [value]="category.name">{{ category.name }}</option>
       </select>
     </label>
   </div>
@@ -39,8 +37,7 @@
     <label>
       SubCategory:
       <select [(ngModel)]="contact.subCategory" name="subCategory">
-        <option value="Boss">Boss</option>
-        <option value="Client">Client</option>
+        <option *ngFor="let subCategory of subCategories" [value]="subCategory">{{ subCategory }}</option>
       </select>
     </label>
   </div>

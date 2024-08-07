@@ -32,7 +32,6 @@ namespace RecruitmentTask.Controllers
             return await _context.Contacts.Where(c => c.UserId == userId).ToListAsync();
         }
 
-
         // GET: api/Contact/5
         [Authorize]
         [HttpGet("{id}")]
@@ -54,7 +53,6 @@ namespace RecruitmentTask.Controllers
             return contact;
         }
 
-
         // PUT: api/Contact/5
         [Authorize]
         [HttpPut("{id}")]
@@ -69,6 +67,11 @@ namespace RecruitmentTask.Controllers
             if (id != contact.Id)
             {
                 return BadRequest();
+            }
+
+            if (!await ValidateCategoryAndSubCategory(contact))
+            {
+                return BadRequest("Invalid category or subcategory");
             }
 
             _context.Entry(contact).State = EntityState.Modified;
@@ -92,14 +95,23 @@ namespace RecruitmentTask.Controllers
             return NoContent();
         }
 
-
         // POST: api/Contact
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Contact>> PostContact(Contact contact)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out var userId))
+            {
+                return BadRequest("Invalid user ID");
+            }
+
             contact.UserId = userId;
+
+            if (!await ValidateCategoryAndSubCategory(contact))
+            {
+                return BadRequest("Invalid category or subcategory");
+            }
 
             _context.Contacts.Add(contact);
             await _context.SaveChangesAsync();
@@ -131,10 +143,26 @@ namespace RecruitmentTask.Controllers
             return NoContent();
         }
 
-
         private bool ContactExists(int id)
         {
             return _context.Contacts.Any(e => e.Id == id);
+        }
+
+        private async Task<bool> ValidateCategoryAndSubCategory(Contact contact)
+        {
+            var category = await _context.Categories.Include(c => c.SubCategories)
+                                                    .FirstOrDefaultAsync(c => c.Name == contact.Category);
+            if (category == null)
+            {
+                return false;
+            }
+
+            if (contact.Category == "Business" && !category.SubCategories.Any(sc => sc.Name == contact.SubCategory))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

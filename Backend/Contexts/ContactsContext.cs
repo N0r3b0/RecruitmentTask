@@ -10,6 +10,8 @@ namespace RecruitmentTask.Contexts
 
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<SubCategory> SubCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -18,6 +20,8 @@ namespace RecruitmentTask.Contexts
             // non-standard table names
             modelBuilder.Entity<Contact>().ToTable("Contact");
             modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<Category>().ToTable("Category");
+            modelBuilder.Entity<SubCategory>().ToTable("SubCategory");
 
             // Define the relationship
             modelBuilder.Entity<Contact>()
@@ -25,8 +29,14 @@ namespace RecruitmentTask.Contexts
                 .WithMany()
                 .HasForeignKey(c => c.UserId);
 
+            modelBuilder.Entity<SubCategory>()
+                .HasOne<Category>(sc => sc.Category)
+                .WithMany(c => c.SubCategories)
+                .HasForeignKey(sc => sc.CategoryId);
+
             // database seed
             //modelBuilder.ApplyConfiguration(new SeedData());
         }
+
     }
 }
