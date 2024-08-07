@@ -1,3 +1,23 @@
+<details>
+  <summary>Spis treści</summary>
+  <ol>
+    <li>
+      <a href="#opis-poszczególnych-klas-i-metod">Opis Poszczególnych Klas i Metod</a>
+      <ul>
+        <li><a href="#modele">Modele</a></li>
+        <li><a href="#kontekst-bazy-danych">Kontekst bazy danych</a></li>
+        <li><a href="#kontrolery">Kontrolery</a></li>
+        <li><a href="#serwisy">Serwisy</a></li>
+        <li><a href="#komponenty">Komponenty</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#wykorzystane-biblioteki">Wykorzystane Biblioteki</a>
+    </li>
+    <li><a href="#sposób-kompilacji-aplikacji">Sposób Kompilacji Aplikacji</a></li>
+  </ol>
+</details>
+
 # Opis Poszczególnych Klas i Metod
 ## Modele:
 ### 1. Contact
@@ -118,34 +138,25 @@
   - delete(): Metoda do usuwania kontaktu.
 
 # Wykorzystane Biblioteki
-- ### ASP.NET Core - Framework do tworzenia aplikacji webowych.
-- ### Entity Framework Core - ORM do zarządzania bazą danych.
-- ### BCrypt.Net - Biblioteka do haszowania haseł.
-- ### System.IdentityModel.Tokens.Jwt - Biblioteka do generowania i weryfikowania tokenów JWT.
-- ### Angular - Framework do tworzenia aplikacji frontendowych.
-- ### RxJS - Biblioteka do programowania reaktywnego w Angularze.
+- ASP.NET Core - Framework do tworzenia aplikacji webowych.
+- Entity Framework Core - ORM do zarządzania bazą danych.
+- BCrypt.Net - Biblioteka do haszowania haseł.
+- System.IdentityModel.Tokens.Jwt - Biblioteka do generowania i weryfikowania tokenów JWT.
+- Angular - Framework do tworzenia aplikacji frontendowych.
+- RxJS - Biblioteka do programowania reaktywnego w Angularze.
 
 # Sposób Kompilacji Aplikacji
 ## Backend (ASP.NET Core)
-- Instalacja zależności: Upewnij się, że masz zainstalowany .NET SDK. W katalogu projektu backendu uruchom polecenie:
-```bash
-dotnet restore
-```
-- Kompilacja: W katalogu projektu backendu uruchom polecenie:
-```bash
-dotnet build
-```
+- **Otwórz projekt**: Otwórz rozwiązanie (plik .sln) w Visual Studio.
+- **Przywróć pakiety NuGet**: Kliknij prawym przyciskiem myszy na rozwiązanie i wybierz Restore NuGet Packages.
+- **Migracje bazy danych**: Otwórz Package Manager Console (Narzędzia > Menedżer pakietów NuGet > Konsola Menedżera pakietów) i uruchom polecenie:
+  ```bash
+  Update-Database
+  ```
+- **Kompilacja i uruchomienie aplikacji**: Kliknij Run lub naciśnij F5, aby skompilować i uruchomić aplikację.
 
-- Migracje bazy danych: Wykonaj migracje bazy danych, aby utworzyć odpowiednie tabele:
-``` bash
-dotnet ef database update
-```
-
-- Uruchomienie aplikacji: W katalogu projektu backendu uruchom polecenie:
-``` bash
-dotnet run
-```
 - Aplikacja backendowa będzie dostępna pod adresem http://localhost:5050.
+
 
 ## Frontend (Angular)
 
